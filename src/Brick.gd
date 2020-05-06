@@ -19,13 +19,11 @@ func _draw():
 
 
 func update():
-	print("update")
 	.update()
 	if not collision: return
 	var rect := collision.shape as RectangleShape2D
 	rect.extents = size / 2
 	collision.position = size / 2
-	print(size/2)
 
 
 func set_size(value):
@@ -40,6 +38,6 @@ func set_color(value):
 	update()
 
 
-func _on_Brick_body_shape_entered(body_id, body, body_shape, area_shape):
+func _on_Brick_body_shape_entered(_body_id, _body, _body_shape, _area_shape):
 	emit_signal("brick_destroyed")
 	queue_free()
