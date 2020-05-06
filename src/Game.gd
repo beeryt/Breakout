@@ -32,16 +32,13 @@ func _draw():
 
 
 func _ready():
+	randomize()
 	var paddle = paddle_prefab.instance()
 	paddle.position.x = $BrickOrigin.position.x + 461 - paddle.size.x / 2
 	paddle.position.y = 587
 	add_child(paddle)
 
-	var ball = ball_prefab.instance()
-	ball.position = paddle.position
-	ball.position.x += paddle.size.x / 2 - ball.size.x / 2
-	ball.position.y -= ball.size.y
-	add_child(ball)
+	spawn_ball()
 
 	var y = 0
 	for color in colors:
@@ -55,3 +52,13 @@ func _ready():
 	var shape := CollisionPolygon2D.new()
 	shape.polygon = wall_poly
 	$Walls.add_child(shape)
+
+
+func spawn_ball():
+	var ball = ball_prefab.instance()
+	var yoffset = 2 * len(colors) * brick_prefab.instance().size.y
+	ball.position = $BrickOrigin.position + Vector2(ball.size.x, yoffset)
+	ball.position.x += (922-ball.size.x) * randf()
+	ball.angle = deg2rad(360*randf())
+	ball.connect("ball_destroyed", self, "spawn_ball")
+	add_child(ball)
