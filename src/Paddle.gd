@@ -19,7 +19,9 @@ func _physics_process(delta):
 	if Input.is_action_pressed("ui_left"):
 		velocity.x -= speed * delta
 
+	var y = position.y
 	move_and_collide(velocity)
+	position.y = y
 
 
 func _draw():

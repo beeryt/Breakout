@@ -18,7 +18,13 @@ func _ready():
 
 
 func _physics_process(_delta):
-	move_and_collide(_velocity)
+	var collision := move_and_collide(_velocity)
+	if collision:
+		var d = _velocity
+		var n = collision.normal
+		_velocity = d - 2 * (d.dot(n)) * n
+		var brick := collision.collider
+		if brick.has_method("destroy"): brick.destroy()
 
 
 func _draw():
