@@ -18,14 +18,16 @@ var wall_poly = PoolVector2Array([
 	Vector2(0,602)
 ])
 
-var colors = [
-	Color("#c84848"),
-	Color("#c66c3a"),
-	Color("#b47a30"),
-	Color("#a2a22a"),
-	Color("#48a048"),
-	Color("#4248c8")
+var brick_types = [
+	{ "color": Color("#c84848"), "score": 7 },
+	{ "color": Color("#c66c3a"), "score": 7 },
+	{ "color": Color("#b47a30"), "score": 4 },
+	{ "color": Color("#a2a22a"), "score": 4 },
+	{ "color": Color("#48a048"), "score": 1},
+	{ "color": Color("#4248c8"), "score": 1 },
 ]
+
+var score := 0
 
 func _draw():
 	draw_colored_polygon(wall_poly, Color("#8e8e8e"))
@@ -41,11 +43,13 @@ func _ready():
 	spawn_ball()
 
 	var y = 0
-	for color in colors:
+	for brick_type in brick_types:
 		for x in range(18):
 			var brick = brick_prefab.instance()
 			brick.position = Vector2(brick.size.x * x, brick.size.y * y)
-			brick.color = color
+			brick.color = brick_type.color
+			brick.score = brick_type.score
+			brick.connect("brick_destroyed", self, "add_score")
 			$BrickOrigin.add_child(brick)
 		y += 1
 
@@ -54,9 +58,14 @@ func _ready():
 	$Walls.add_child(shape)
 
 
+func add_score(value):
+	score += value
+	$ReferenceRect/Score.text = str(score)
+
+
 func spawn_ball():
 	var ball = ball_prefab.instance()
-	var yoffset = 2 * len(colors) * brick_prefab.instance().size.y
+	var yoffset = 2 * len(brick_types) * brick_prefab.instance().size.y
 	ball.position = $BrickOrigin.position + Vector2(ball.size.x, yoffset)
 	ball.position.x += (922-ball.size.x) * randf()
 	ball.angle = deg2rad(360*randf())

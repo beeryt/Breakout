@@ -3,10 +3,11 @@ extends StaticBody2D
 
 export var size := Vector2(50,20) setget set_size
 export var color := Color(1,1,0) setget set_color
+export var score := 1
 
 var collision : CollisionShape2D
 
-signal brick_destroyed
+signal brick_destroyed(score)
 
 func _ready():
 	collision = $CollisionShape2D
@@ -39,5 +40,5 @@ func set_color(value):
 
 
 func destroy():
-	emit_signal("brick_destroyed")
+	emit_signal("brick_destroyed", score)
 	queue_free()

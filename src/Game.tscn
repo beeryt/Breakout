@@ -9,3 +9,21 @@ script = ExtResource( 1 )
 position = Vector2( 51, 179 )
 
 [node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 1024, 51 )
+border_color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="ReferenceRect"]
+anchor_bottom = 1.0
+text = "000"
+valign = 1
+uppercase = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
