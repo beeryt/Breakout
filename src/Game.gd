@@ -28,6 +28,7 @@ var brick_types = [
 ]
 
 var score := 0
+var turns := 5
 
 func _draw():
 	draw_colored_polygon(wall_poly, Color("#8e8e8e"))
@@ -40,6 +41,9 @@ func _ready():
 	paddle.position.y = 587
 	add_child(paddle)
 
+	$ReferenceRect/Turns.text = str(turns)
+	$ReferenceRect/Score.text = str(score)
+	
 	spawn_ball()
 
 	var y = 0
@@ -69,5 +73,12 @@ func spawn_ball():
 	ball.position = $BrickOrigin.position + Vector2(ball.size.x, yoffset)
 	ball.position.x += (922-ball.size.x) * randf()
 	ball.angle = deg2rad(360*randf())
-	ball.connect("ball_destroyed", self, "spawn_ball")
+	ball.connect("ball_destroyed", self, "ball_destroyed")
 	add_child(ball)
+
+
+func ball_destroyed():
+	turns -= 1
+	$ReferenceRect/Turns.text = str(turns)
+	if turns > 0:
+		spawn_ball()
