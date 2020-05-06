@@ -1,9 +1,13 @@
 tool
-extends Area2D
+extends KinematicBody2D
 
 export var size := Vector2(12,12) setget set_size
 export var color := Color(1,1,0) setget set_color
 
+var angle := 0.0 setget set_angle
+var speed := 2.0 setget set_speed
+
+var _velocity = Vector2()
 var _collision : CollisionShape2D
 
 signal ball_destroyed
@@ -13,6 +17,10 @@ func _ready():
 	update()
 
 
+func _physics_process(_delta):
+	move_and_collide(_velocity)
+
+
 func _draw():
 	var rect := Rect2(Vector2(), size)
 	draw_rect(rect, color)
@@ -20,6 +28,7 @@ func _draw():
 
 func update():
 	.update()
+	_velocity = Vector2(0, speed).rotated(angle)
 	if not _collision: return
 	var rect := _collision.shape as RectangleShape2D
 	rect.extents = size / 2
@@ -34,6 +43,18 @@ func set_size(value):
 
 func set_color(value):
 	color = value
+	property_list_changed_notify()
+	update()
+
+
+func set_speed(value):
+	speed = value
+	property_list_changed_notify()
+	update()
+
+
+func set_angle(value):
+	angle = value
 	property_list_changed_notify()
 	update()
 
