@@ -10,7 +10,7 @@ func _ready():
 	collision = $CollisionShape2D
 	update()
 
-var speed = 100
+var speed = 500
 func _physics_process(delta):
 	var velocity := Vector2()
 

@@ -18,7 +18,7 @@ var wall_poly = PoolVector2Array([
 	Vector2(0,602)
 ])
 
-var brick_types = [
+const brick_types = [
 	{ "color": Color("#c84848"), "score": 7 },
 	{ "color": Color("#c66c3a"), "score": 7 },
 	{ "color": Color("#b47a30"), "score": 4 },
@@ -29,6 +29,12 @@ var brick_types = [
 
 var score := 0
 var turns := 5
+var hit_counter := 0
+var has_hit_first_row := false
+var has_hit_second_row := false
+
+var balls := []
+var ball_speed_multiplier := 1.0
 
 func _draw():
 	draw_colored_polygon(wall_poly, Color("#8e8e8e"))
@@ -53,7 +59,7 @@ func _ready():
 			brick.position = Vector2(brick.size.x * x, brick.size.y * y)
 			brick.color = brick_type.color
 			brick.score = brick_type.score
-			brick.connect("brick_destroyed", self, "add_score")
+			brick.connect("brick_destroyed", self, "add_score", [brick])
 			$BrickOrigin.add_child(brick)
 		y += 1
 
@@ -62,9 +68,27 @@ func _ready():
 	$Walls.add_child(shape)
 
 
-func add_score(value):
+func add_score(value, brick):
 	score += value
 	$ReferenceRect/Score.text = str(score)
+	
+	hit_counter += 1
+	if hit_counter == 4 or hit_counter == 12:
+		increase_speed(1.5)
+	
+	if not has_hit_first_row and brick.color == brick_types[0].color:
+		increase_speed(1.33)
+		has_hit_first_row = true
+	
+	if not has_hit_second_row and brick.color == brick_types[1].color:
+		increase_speed(1.33)
+		has_hit_second_row = true
+
+
+func increase_speed(factor, list=self.balls):
+	ball_speed_multiplier *= factor
+	for ball in list:
+		ball.speed *= factor
 
 
 func spawn_ball():
@@ -73,11 +97,14 @@ func spawn_ball():
 	ball.position = $BrickOrigin.position + Vector2(ball.size.x, yoffset)
 	ball.position.x += (922-ball.size.x) * randf()
 	ball.angle = deg2rad(360*randf())
-	ball.connect("ball_destroyed", self, "ball_destroyed")
+	ball.speed *= ball_speed_multiplier
+	ball.connect("ball_destroyed", self, "ball_destroyed", [ball])
+	balls.append(ball)
 	add_child(ball)
 
 
-func ball_destroyed():
+func ball_destroyed(ball):
+	balls.erase(ball)
 	turns -= 1
 	$ReferenceRect/Turns.text = str(turns)
 	if turns > 0:
