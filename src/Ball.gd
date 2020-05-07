@@ -11,6 +11,7 @@ var _velocity = Vector2()
 var _collision : CollisionShape2D
 
 signal ball_destroyed
+signal ball_collided(collision)
 
 func _ready():
 	_collision = $CollisionShape2D
@@ -25,6 +26,7 @@ func _physics_process(_delta):
 		_velocity = d - 2 * (d.dot(n)) * n
 		var brick := collision.collider
 		if brick.has_method("destroy"): brick.destroy()
+		emit_signal("ball_collided", collision)
 
 
 func _draw():

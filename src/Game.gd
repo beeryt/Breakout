@@ -32,9 +32,11 @@ var turns := 5
 var hit_counter := 0
 var has_hit_first_row := false
 var has_hit_second_row := false
+var has_hit_back_wall := false
 
 var balls := []
 var ball_speed_multiplier := 1.0
+var paddle = null
 
 func _draw():
 	draw_colored_polygon(wall_poly, Color("#8e8e8e"))
@@ -42,7 +44,7 @@ func _draw():
 
 func _ready():
 	randomize()
-	var paddle = paddle_prefab.instance()
+	paddle = paddle_prefab.instance()
 	paddle.position.x = $BrickOrigin.position.x + 461 - paddle.size.x / 2
 	paddle.position.y = 587
 	add_child(paddle)
@@ -99,6 +101,7 @@ func spawn_ball():
 	ball.angle = deg2rad(360*randf())
 	ball.speed *= ball_speed_multiplier
 	ball.connect("ball_destroyed", self, "ball_destroyed", [ball])
+	ball.connect("ball_collided", self, "ball_collided", [ball])
 	balls.append(ball)
 	add_child(ball)
 
@@ -109,3 +112,12 @@ func ball_destroyed(ball):
 	$ReferenceRect/Turns.text = str(turns)
 	if turns > 0:
 		spawn_ball()
+
+
+func ball_collided(collision: KinematicCollision2D, ball):
+	# halve size of paddle first time back wall is hit
+	if not has_hit_back_wall and collision.position.y < $BrickOrigin.position.y:
+		if collision.normal == Vector2(0,1):
+			has_hit_back_wall = true
+			paddle.size.x /= 2.0
+			print("halved!")
