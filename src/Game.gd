@@ -27,8 +27,8 @@ const brick_types = [
 	{ "color": Color("#4248c8"), "score": 1 },
 ]
 
-var score := 0
-var turns := 5
+export var score := 0 setget set_score
+export var turns := 5 setget set_turns
 var hit_counter := 0
 var has_hit_first_row := false
 var has_hit_second_row := false
@@ -48,9 +48,9 @@ func _ready():
 	paddle.position.x = $BrickOrigin.position.x + 461 - paddle.size.x / 2
 	paddle.position.y = 587
 	add_child(paddle)
-
-	$ReferenceRect/Turns.text = str(turns)
-	$ReferenceRect/Score.text = str(score)
+	
+	set_turns(5)
+	set_score(0)
 	
 	spawn_ball()
 
@@ -61,7 +61,7 @@ func _ready():
 			brick.position = Vector2(brick.size.x * x, brick.size.y * y)
 			brick.color = brick_type.color
 			brick.score = brick_type.score
-			brick.connect("brick_destroyed", self, "add_score", [brick])
+			brick.connect("brick_destroyed", self, "brick_destroyed", [brick])
 			$BrickOrigin.add_child(brick)
 		y += 1
 
@@ -70,9 +70,26 @@ func _ready():
 	$Walls.add_child(shape)
 
 
-func add_score(value, brick):
-	score += value
-	$ReferenceRect/Score.text = str(score)
+func set_turns(value):
+	if value > 9 or value < 0:
+		printerr("value is out of range: ", value)
+	else:
+		turns = value
+		$TurnCounter.frame = turns % 10
+
+
+func set_score(value):
+	if value > 999 or value < 0:
+		printerr("value is out of range: ", value)
+	else:
+		score = value
+		$Score_100.frame = (score / 100) % 10
+		$Score_010.frame = (score / 10) % 10
+		$Score_001.frame = score % 10
+
+
+func brick_destroyed(value, brick):
+	set_score(score + value)
 	
 	hit_counter += 1
 	if hit_counter == 4 or hit_counter == 12:
@@ -108,8 +125,7 @@ func spawn_ball():
 
 func ball_destroyed(ball):
 	balls.erase(ball)
-	turns -= 1
-	$ReferenceRect/Turns.text = str(turns)
+	set_turns(turns - 1)
 	if turns > 0:
 		spawn_ball()
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://src/Game.gd" type="Script" id=1]
+[ext_resource path="res://font.png" type="Texture" id=2]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 1 )
@@ -10,27 +11,43 @@ position = Vector2( 51, 179 )
 
 [node name="Walls" type="StaticBody2D" parent="."]
 
-[node name="ReferenceRect" type="ReferenceRect" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 1024, 51 )
-border_color = Color( 0, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Score_100" type="Sprite" parent="."]
+modulate = Color( 0.556863, 0.556863, 0.556863, 1 )
+position = Vector2( 256, 4 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 10
 
-[node name="Score" type="Label" parent="ReferenceRect"]
-anchor_bottom = 1.0
-text = "000"
-valign = 1
-uppercase = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Score_010" type="Sprite" parent="."]
+modulate = Color( 0.556863, 0.556863, 0.556863, 1 )
+position = Vector2( 323, 4 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 10
 
-[node name="Turns" type="Label" parent="ReferenceRect"]
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -8.0
-text = "5"
+[node name="Score_001" type="Sprite" parent="."]
+modulate = Color( 0.556863, 0.556863, 0.556863, 1 )
+position = Vector2( 390, 4 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 10
+
+[node name="TurnCounter" type="Sprite" parent="."]
+modulate = Color( 0.556863, 0.556863, 0.556863, 1 )
+position = Vector2( 633, 4 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 10
+
+[node name="OtherCounter" type="Sprite" parent="."]
+modulate = Color( 0.556863, 0.556863, 0.556863, 1 )
+position = Vector2( 812, 4 )
+scale = Vector2( 8.5, 8.5 )
+texture = ExtResource( 2 )
+centered = false
+hframes = 10
+frame = 1
